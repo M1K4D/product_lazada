@@ -29,7 +29,7 @@ export class Product extends BaseEntity {
   @Column()
   discription: string;
 
-  @Column()
+  @Column({ length: 50 })
   category: string;
 
   @CreateDateColumn()

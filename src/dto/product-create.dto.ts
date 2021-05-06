@@ -31,4 +31,9 @@ export class ProductCreateDto {
   @IsString()
   @IsNotEmpty()
   discription: string;
+
+  @ApiProperty({ example: 'test-api-category' })
+  @IsString()
+  @IsNotEmpty()
+  category: string;
 }
