@@ -1,4 +1,5 @@
 import {
+  BaseEntity,
   Column,
   CreateDateColumn,
   Entity,
@@ -6,7 +7,7 @@ import {
 } from 'typeorm';
 
 @Entity()
-export class Product {
+export class Product extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -23,7 +24,13 @@ export class Product {
   price: number;
 
   @Column()
+  quantity: number;
+
+  @Column()
   discription: string;
+
+  @Column()
+  category: string;
 
   @CreateDateColumn()
   create_at: Date;
