@@ -4,12 +4,16 @@ import { ProductCreateDto } from 'src/dto/product-create.dto';
 import { ProductSearchDto } from 'src/dto/product-search.dto';
 import { ProductUpdateDto } from 'src/dto/product.update.dto';
 import { Product } from 'src/entity/product.entity';
+import { categoryRepository } from 'src/repository/category.repository';
 import { ProductRepository } from 'src/repository/product.repository';
 import { getConnection } from 'typeorm';
 
 @Injectable()
 export class ProductService {
-  constructor(private readonly productRepository: ProductRepository) {}
+  constructor(
+    private readonly productRepository: ProductRepository,
+    private readonly categoryRepository: categoryRepository,
+  ) {}
 
   async getProductById(id: number): Promise<object> {
     try {
@@ -44,11 +48,11 @@ export class ProductService {
         products.andWhere('product.name ilike :name', { name: `%${name}%` });
       }
 
-      if (category) {
-        products.andWhere('product.category ilike :category', {
-          category: `%${category}%`,
-        });
-      }
+      // if (category) {
+      //   products.andWhere('product.category ilike :category', {
+      //     category: `%${category}%`,
+      //   });
+      // }
 
       if (brand) {
         products.andWhere('product.brand ilike :brand', {
