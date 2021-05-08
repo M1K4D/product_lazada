@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { ProductCreateDto } from 'src/dto/product-create.dto';
 import { ProductSearchDto } from 'src/dto/product-search.dto';
 import { ProductUpdateDto } from 'src/dto/product.update.dto';
+import { Category } from 'src/entity/category.entity';
 import { Product } from 'src/entity/product.entity';
 import { categoryRepository } from 'src/repository/category.repository';
 import { ProductRepository } from 'src/repository/product.repository';
@@ -38,7 +39,8 @@ export class ProductService {
     try {
       const products = await getConnection()
         .getRepository(Product)
-        .createQueryBuilder('product');
+        .createQueryBuilder('product')
+        .innerJoinAndSelect('product.category', 'category');
 
       if (sku) {
         products.andWhere('product.sku ilike :sku', { sku: `%${sku}%` });
@@ -62,7 +64,7 @@ export class ProductService {
 
       products.orderBy('product.id', 'ASC');
 
-      const result = await products.getMany();
+      const result = await products.getRawMany();
 
       return {
         success: true,
@@ -91,9 +93,22 @@ export class ProductService {
       const find_product = await this.productRepository.findOne({
         where: { sku: sku },
       });
+      const find_category = await this.categoryRepository.findOne({
+        where: { name: category },
+      });
       if (find_product) throw new Error('sku is duplicate');
+
       if (quantity <= 0) throw new Error('quantity is negative');
       const product = new Product();
+
+      if (find_category) {
+        product.category = find_category;
+      } else {
+        const newCategory = new Category();
+        newCategory.name = category;
+        newCategory.save();
+        product.category = newCategory;
+      }
 
       product.img = img;
       product.sku = sku;
@@ -101,6 +116,7 @@ export class ProductService {
       product.brand = brand;
       product.price = price;
       product.quantity = quantity;
+
       product.discription = discription;
       await product.save();
 
@@ -139,12 +155,21 @@ export class ProductService {
 
       if (quantity) {
         find_product.quantity = find_product.quantity + quantity;
-        // console.log(find_product.quantity + quantity);
       }
 
-      // if (category) {
-      //   find_product.category = category;
-      // }
+      if (category) {
+        const find_category = await this.categoryRepository.findOne({
+          where: { name: category },
+        });
+        if (find_category) {
+          find_product.category = find_category;
+        } else {
+          const newCategory = new Category();
+          newCategory.name = category;
+          newCategory.save();
+          find_product.category = newCategory;
+        }
+      }
 
       if (discription) {
         find_product.discription = discription;
