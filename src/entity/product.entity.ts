@@ -3,8 +3,10 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { Category } from './category.entity';
 
 @Entity()
 export class Product extends BaseEntity {
@@ -33,8 +35,11 @@ export class Product extends BaseEntity {
   discription: string;
 
   @Column({ length: 50 })
-  category: string;
+  categorys: string;
 
   @CreateDateColumn()
   create_at: Date;
+
+  @ManyToOne(() => Category, (category) => category.products)
+  category: Category;
 }

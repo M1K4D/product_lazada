@@ -97,7 +97,6 @@ export class ProductService {
       product.brand = brand;
       product.price = price;
       product.quantity = quantity;
-      product.category = category;
       product.discription = discription;
       await product.save();
 
@@ -139,9 +138,9 @@ export class ProductService {
         // console.log(find_product.quantity + quantity);
       }
 
-      if (category) {
-        find_product.category = category;
-      }
+      // if (category) {
+      //   find_product.category = category;
+      // }
 
       if (discription) {
         find_product.discription = discription;
