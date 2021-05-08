@@ -12,6 +12,9 @@ export class Product extends BaseEntity {
   id: number;
 
   @Column()
+  img: string;
+
+  @Column()
   sku: string;
 
   @Column()

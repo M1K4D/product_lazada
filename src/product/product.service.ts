@@ -56,6 +56,8 @@ export class ProductService {
         });
       }
 
+      products.orderBy('product.id', 'ASC');
+
       const result = await products.getMany();
 
       return {
@@ -71,15 +73,25 @@ export class ProductService {
   }
 
   async addProduct(body: ProductCreateDto): Promise<any> {
-    const { sku, name, brand, price, quantity, discription, category } = body;
+    const {
+      img,
+      sku,
+      name,
+      brand,
+      price,
+      quantity,
+      discription,
+      category,
+    } = body;
     try {
       const find_product = await this.productRepository.findOne({
         where: { sku: sku },
       });
       if (find_product) throw new Error('sku is duplicate');
-
+      if (quantity <= 0) throw new Error('quantity is negative');
       const product = new Product();
 
+      product.img = img;
       product.sku = sku;
       product.name = name;
       product.brand = brand;
@@ -122,8 +134,13 @@ export class ProductService {
         find_product.price = price;
       }
 
+      if (quantity) {
+        find_product.quantity = find_product.quantity + quantity;
+        // console.log(find_product.quantity + quantity);
+      }
+
       if (category) {
-        find_product.quantity = quantity;
+        find_product.category = category;
       }
 
       if (discription) {

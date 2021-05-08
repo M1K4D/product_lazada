@@ -2,6 +2,11 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class ProductCreateDto {
+  @ApiProperty({ example: 'iamg-name.png' })
+  @IsString()
+  @IsNotEmpty()
+  img: string;
+
   @ApiProperty({ example: 'sku-0123' })
   @IsString()
   @IsNotEmpty()
