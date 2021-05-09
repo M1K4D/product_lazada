@@ -50,12 +50,6 @@ export class ProductService {
         products.andWhere('product.name ilike :name', { name: `%${name}%` });
       }
 
-      // if (category) {
-      //   products.andWhere('product.category ilike :category', {
-      //     category: `%${category}%`,
-      //   });
-      // }
-
       if (brand) {
         products.andWhere('product.brand ilike :brand', {
           brand: `%${brand}%`,
@@ -78,7 +72,7 @@ export class ProductService {
     }
   }
 
-  async addProduct(body: ProductCreateDto): Promise<any> {
+  async addProduct(body: ProductCreateDto): Promise<object> {
     const {
       img,
       sku,
@@ -132,7 +126,7 @@ export class ProductService {
     }
   }
 
-  async updateProduct(id: number, body: ProductUpdateDto): Promise<any> {
+  async updateProduct(id: number, body: ProductUpdateDto): Promise<object> {
     const { name, brand, price, category, discription, quantity } = body;
     try {
       const find_product = await this.productRepository.findOne({
