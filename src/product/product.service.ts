@@ -50,12 +50,6 @@ export class ProductService {
         products.andWhere('product.name ilike :name', { name: `%${name}%` });
       }
 
-      // if (category) {
-      //   products.andWhere('product.category ilike :category', {
-      //     category: `%${category}%`,
-      //   });
-      // }
-
       if (brand) {
         products.andWhere('product.brand ilike :brand', {
           brand: `%${brand}%`,
