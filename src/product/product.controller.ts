@@ -87,7 +87,6 @@ export class ProductController {
   })
   @UseInterceptors(FileInterceptor('file', storage))
   uploadfile(@UploadedFile() file): Observable<object> {
-    // console.log(file);
     return of({ imagePath: file.filename });
   }
 

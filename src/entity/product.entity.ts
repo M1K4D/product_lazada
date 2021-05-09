@@ -34,9 +34,6 @@ export class Product extends BaseEntity {
   @Column()
   discription: string;
 
-  // @Column({ length: 50 })
-  // categorys: string;
-
   @CreateDateColumn()
   create_at: Date;
 
