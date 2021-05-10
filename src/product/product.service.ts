@@ -105,7 +105,7 @@ export class ProductService {
       }
 
       product.img = img;
-      product.sku = sku;
+      product.sku = sku.replace(/ /g, '');
       product.name = name;
       product.brand = brand;
       product.price = price;
@@ -136,7 +136,7 @@ export class ProductService {
       if (!find_product) throw new Error('Product not found');
 
       if (name) {
-        find_product.name = name;
+        find_product.name = name.replace(/ /g, '');
       }
 
       if (brand) {
