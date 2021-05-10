@@ -50,6 +50,12 @@ export class ProductService {
         products.andWhere('product.name ilike :name', { name: `%${name}%` });
       }
 
+      if (category) {
+        products.andWhere('category.name ilike :category', {
+          category: `%${category}%`,
+        });
+      }
+
       if (brand) {
         products.andWhere('product.brand ilike :brand', {
           brand: `%${brand}%`,
@@ -85,7 +91,7 @@ export class ProductService {
     } = body;
     try {
       const find_product = await this.productRepository.findOne({
-        where: { sku: sku },
+        where: { sku: sku.replace(/ /g, '') },
       });
       const find_category = await this.categoryRepository.findOne({
         where: { name: category },
