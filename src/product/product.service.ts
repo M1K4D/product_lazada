@@ -8,6 +8,8 @@ import { Product } from 'src/entity/product.entity';
 import { categoryRepository } from 'src/repository/category.repository';
 import { ProductRepository } from 'src/repository/product.repository';
 import { getConnection } from 'typeorm';
+const fs = require('fs');
+import { join, parse } from 'path';
 
 @Injectable()
 export class ProductService {
@@ -15,6 +17,20 @@ export class ProductService {
     private readonly productRepository: ProductRepository,
     private readonly categoryRepository: categoryRepository,
   ) {}
+
+  async deleteImg(imgname) {
+    try {
+      const path = join(__dirname, '..', '..', './uploads/img/', imgname);
+      fs.unlinkSync(path);
+      //file removed
+      return {
+        success: true,
+        message: 'delete img success',
+      };
+    } catch (err) {
+      console.error(err);
+    }
+  }
 
   async getProductById(id: number): Promise<object> {
     try {

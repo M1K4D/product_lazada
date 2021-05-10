@@ -86,12 +86,20 @@ export class ProductController {
     },
   })
   @UseInterceptors(FileInterceptor('file', storage))
-  uploadfile(@UploadedFile() file): Observable<object> {
-    return of({ imagePath: file.filename });
+  async uploadfile(@UploadedFile() file): Promise<object> {
+    return { imagePath: file.filename };
   }
 
   @Get('product-img/:imgname')
-  getImgProduct(@Param('imgname') imgname, @Res() res): Observable<object> {
-    return of(res.sendFile(join(process.cwd(), '/uploads/img/' + imgname)));
+  async getImgProduct(
+    @Param('imgname') imgname: string,
+    @Res() res,
+  ): Promise<object> {
+    return res.sendFile(join(process.cwd(), '/uploads/img/' + imgname));
+  }
+
+  @Delete('/delete-img/:img')
+  async deleteImg(@Param('img') img: string): Promise<object> {
+    return await this.productService.deleteImg(img);
   }
 }
