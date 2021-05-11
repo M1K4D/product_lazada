@@ -1,10 +1,12 @@
 import {
   BaseEntity,
+  BeforeUpdate,
   Column,
   CreateDateColumn,
   Entity,
   ManyToOne,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { Category } from './category.entity';
 
@@ -18,6 +20,9 @@ export class Product extends BaseEntity {
 
   @Column()
   sku: string;
+
+  @Column({ nullable: true })
+  sku_id: string;
 
   @Column()
   name: string;
@@ -36,6 +41,17 @@ export class Product extends BaseEntity {
 
   @CreateDateColumn()
   create_at: Date;
+
+  @CreateDateColumn({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
+  created_at: Date;
+
+  @UpdateDateColumn({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
+  updated_at: Date;
+
+  @BeforeUpdate()
+  updateTimestamp() {
+    this.updated_at = new Date();
+  }
 
   @ManyToOne(() => Category, (category) => category.products)
   category: Category;
