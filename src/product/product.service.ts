@@ -42,7 +42,7 @@ export class ProductService {
       method: 'PUT',
       url: 'http://localhost:3002/rest/update',
       body: xml,
-      json: true,
+      // json: true,
     };
 
     const res = await Fetch(option);
@@ -75,14 +75,35 @@ export class ProductService {
     }
   }
 
-  async readFile() {
-    fs.readFile('/Users/joe/test.txt', 'utf8', (err, data) => {
-      if (err) {
-        console.error(err);
-        return;
-      }
-      console.log(data);
-    });
+  async readData() {
+    const data = fs.readFileSync('imgUpload.json');
+    let img = JSON.parse(data);
+    // console.log(img.data.image.url);
+    return img.data.image.url;
+  }
+
+  async upload(filename) {
+    const form = {
+      file: fs.createReadStream(
+        join(process.cwd(), '/uploads/img/' + filename),
+      ),
+    };
+
+    const res = await request.post(
+      { url: 'http://localhost:3002/rest/upload', formData: form },
+      function optionalCallback(err, httpResponse, body) {
+        if (err) {
+          return console.error('upload failed:', err);
+        }
+        // console.log(body);
+        fs.writeFile('imgUpload.json', body, (err) => {
+          if (err) throw err;
+        });
+      },
+    );
+
+    const data = await this.readData();
+    return data;
   }
 
   async getProductById(id: number): Promise<object> {
@@ -159,6 +180,8 @@ export class ProductService {
       category,
     } = body;
     try {
+      const res_upload = await this.upload(img);
+      console.log(res_upload);
       const find_product = await this.productRepository.findOne({
         where: { sku: sku.replace(/ /g, '') },
       });
@@ -213,10 +236,7 @@ export class ProductService {
                 package_width: '44',
                 package_content: "this is what's in the box",
                 Images: {
-                  Image: [
-                    'http://sg.s.alibaba.lzd.co/original/59046bec4d53e74f8ad38d19399205e6.jpg',
-                    'http://sg.s.alibaba.lzd.co/original/179715d3de39a1918b19eec3279dd482.jpg',
-                  ],
+                  Image: [`http://localhost:3002/rest/getImg/${res_upload}`],
                 },
               },
             },
