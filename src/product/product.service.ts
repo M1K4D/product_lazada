@@ -89,21 +89,21 @@ export class ProductService {
       ),
     };
 
-    const res = await request.post(
+    await request.post(
       { url: 'http://localhost:3002/rest/upload', formData: form },
       function optionalCallback(err, httpResponse, body) {
         if (err) {
           return console.error('upload failed:', err);
         }
         // console.log(body);
-        fs.writeFile('imgUpload.json', body, (err) => {
-          if (err) throw err;
-        });
+        // fs.writeFile('imgUpload.json', body, (err) => {
+        //   if (err) throw err;
+        // });
       },
     );
 
-    const data = await this.readData();
-    return data;
+    // const data = await this.readData();
+    // return data;
   }
 
   async getProductById(id: number): Promise<object> {
@@ -181,7 +181,7 @@ export class ProductService {
     } = body;
     try {
       const res_upload = await this.upload(img);
-      console.log(res_upload);
+      // console.log(res_upload);
       const find_product = await this.productRepository.findOne({
         where: { sku: sku.replace(/ /g, '') },
       });
@@ -236,7 +236,7 @@ export class ProductService {
                 package_width: '44',
                 package_content: "this is what's in the box",
                 Images: {
-                  Image: [`http://localhost:3002/rest/getImg/${res_upload}`],
+                  Image: [`http://localhost:3002/rest/getImg/${img}`],
                 },
               },
             },
