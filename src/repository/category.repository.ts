@@ -1,4 +1,7 @@
-import { InternalServerErrorException } from '@nestjs/common';
+import {
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { Category } from 'src/entity/category.entity';
 import { EntityRepository, Repository } from 'typeorm';
 
@@ -17,6 +20,15 @@ export class categoryRepository extends Repository<Category> {
       }
     } catch (error) {
       throw new InternalServerErrorException();
+    }
+  }
+
+  async getCate() {
+    try {
+      const data = await this.find();
+      return data;
+    } catch (error) {
+      throw new NotFoundException();
     }
   }
 }
