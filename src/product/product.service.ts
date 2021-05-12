@@ -10,9 +10,12 @@ import { ProductRepository } from 'src/repository/product.repository';
 import { getConnection } from 'typeorm';
 const fs = require('fs');
 import { join, parse } from 'path';
+var jsonxml = require('jsontoxml');
 
 import * as request from 'request';
 import { promisify } from 'util';
+
+const xmlHead = '<?xml version="1.0" encoding="UTF-8"?>';
 
 const Fetch = promisify(request);
 
@@ -27,12 +30,13 @@ export class ProductService {
     const option = {
       method: 'POST',
       url: 'http://localhost:3002/rest/create',
+      headers: { 'Content-Type': 'text/xml' },
       body: xml,
-      json: true,
+      xml: true,
     };
 
     const res = await Fetch(option);
-    const body = res.body;
+    const body = JSON.parse(res.body);
     // console.log(_body);
     return body;
   }
@@ -41,8 +45,9 @@ export class ProductService {
     const option = {
       method: 'PUT',
       url: 'http://localhost:3002/rest/update',
+      headers: { 'Content-Type': 'text/xml' },
       body: xml,
-      // json: true,
+      xml: true,
     };
 
     const res = await Fetch(option);
@@ -243,9 +248,10 @@ export class ProductService {
           },
         },
       };
+      var xml = jsonxml(xmlBody, xmlHead);
 
-      const res = await this.createLazada(xmlBody);
-      console.log(res.data.sku_list[0]);
+      const res = await this.createLazada(xml);
+      // console.log(res.data.sku_list[0].sku_id);
 
       product.discription = discription;
       const sku_id = res.data.sku_list[0].sku_id;
@@ -315,8 +321,6 @@ export class ProductService {
               name: name,
               short_description: discription,
               delivery_option_sof: 'Yes',
-              '#comment':
-                'should be set as \u2018Yes\u2019 only for products to be delivered by seller',
             },
             Skus: {
               Sku: [
@@ -344,8 +348,6 @@ export class ProductService {
                   Images: {
                     Image: [
                       'http://sg.s.alibaba.lzd.co/original/59046bec4d53e74f8ad38d19399205e6.jpg',
-                      'http://sg.s.alibaba.lzd.co/original/179715d3de39a1918b19eec3279dd482.jpg',
-                      'http://sg.s.alibaba.lzd.co/original/e2ae2b41afaf310b51bc5764c17306cd.jpg',
                     ],
                   },
                 },
@@ -355,7 +357,8 @@ export class ProductService {
         },
       };
 
-      const res = await this.updateLazada(xmlBody);
+      var xml = jsonxml(xmlBody, xmlHead);
+      const res = await this.updateLazada(xml);
       console.log(res);
 
       await find_product.save();
